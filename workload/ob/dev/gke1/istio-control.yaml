@@ -86,7 +86,7 @@ metadata:
   name: frontend
 spec:
   hosts:
-  - "frontend.ob-dev.svc.cluster.local"
+  - "frontend.ob.svc.cluster.local"
   http:
   - route:
     - destination:
