@@ -25,13 +25,7 @@ export GKE1=${CLUSTER_1}
 export GKE2=${CLUSTER_2}
 export DEV_NS=ob
 
-## Stage 1: Preparation
-ASM_REV_LABEL=asm-managed
-
-sed -e "s/ASM_REV_LABEL/${ASM_REV_LABEL}/" ${SCRIPT_DIR}/ob/dev/gke1/ob-namespace-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke1/ob-namespace-patch.yaml
-sed -e "s/ASM_REV_LABEL/${ASM_REV_LABEL}/" ${SCRIPT_DIR}/ob/dev/gke2/ob-namespace-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke2/ob-namespace-patch.yaml
-
-## Stage 2: Workload Identity for services
+## Stage 1: Workload Identity for services
 GSA_NAME=workload-minimal-monitoring
 gcloud iam service-accounts create ${GSA_NAME} \
     --description="Minimal identity for workload monitoring"
@@ -51,6 +45,15 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
   --member "serviceAccount:${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
   --role roles/clouddebugger.agent
+
+## Stage 2: Preparation
+ASM_REV_LABEL=asm-managed
+
+sed -e "s/ASM_REV_LABEL/${ASM_REV_LABEL}/" ${SCRIPT_DIR}/ob/dev/gke1/ob-namespace-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke1/ob-namespace-patch.yaml
+sed -e "s/ASM_REV_LABEL/${ASM_REV_LABEL}/" ${SCRIPT_DIR}/ob/dev/gke2/ob-namespace-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke2/ob-namespace-patch.yaml
+
+sed -e "s/GSA/${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com}/" ${SCRIPT_DIR}/ob/dev/gke1/sa-workload-monitoring-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke1/sa-workload-monitoring-patch.yaml
+sed -e "s/GSA/${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com}/" ${SCRIPT_DIR}/ob/dev/gke2/sa-workload-monitoring-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke2/sa-workload-monitoring-patch.yaml
 
 ## Stage 3: Deploy
 echo -e "\n"

@@ -27,3 +27,8 @@ patchesJson6902:
     version: v1
     kind: Namespace
     name: ob
+- path: sa-workload-monitoring-patch.yaml
+  target:
+    version: v1
+    kind: ServiceAccount
+    name: workload-monitoring
