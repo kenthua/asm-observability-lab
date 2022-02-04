@@ -15,7 +15,7 @@
 
 export DEV_NS=ob
 
-for CLUSTER in ${GKE_DEV_1} ${GKE_DEV_2}
+for CLUSTER in ${CLUSTER_1} ${CLUSTER_2}
 do
   kubectl delete ns ${DEV_NS} --context ${CLUSTER}
 done

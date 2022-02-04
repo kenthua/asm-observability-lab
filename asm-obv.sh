@@ -1,4 +1,4 @@
-PROJECT_ID=[PROJECT_HERE]
+PROJECT_ID=qwiklabs-gcp-00-59a1f47dfba0
 mkdir -p asm-observability && cd asm-observability && export WORKDIR=$(pwd)
 
 gcloud config set project ${PROJECT_ID}
@@ -94,6 +94,14 @@ gcloud container hub memberships register ${CLUSTER_2} \
 gcloud beta container hub mesh enable --project=${PROJECT_ID}
 gcloud beta container hub mesh describe
 
+# wait for reg
+while true 
+do
+    if [ $(gcloud beta container hub mesh describe --format=json | grep OK | wc -l) == "2" ]; then
+        break;
+    fi
+done
+
 
 kubectl --context=${CLUSTER_1} wait --for=condition=established crd controlplanerevisions.mesh.cloud.google.com --timeout=5m
 kubectl --context=${CLUSTER_2} wait --for=condition=established crd controlplanerevisions.mesh.cloud.google.com --timeout=5m
@@ -125,7 +133,19 @@ chmod +x asmcli
     ${PROJECT_ID}/${CLUSTER_1_ZONE}/${CLUSTER_1} \
     ${PROJECT_ID}/${CLUSTER_2_ZONE}/${CLUSTER_2}
 
-gcloud compute firewall-rules create --network default --allow tcp --direction ingress --source-ranges 10.0.0.0/8 all
+# firewall rule for multi-subnet clusters
+function join_by { local IFS="$1"; shift; echo "$*"; }
+ALL_CLUSTER_CIDRS=$(gcloud container clusters list --project ${PROJECT_ID} --format='value(clusterIpv4Cidr)' | sort | uniq)
+ALL_CLUSTER_CIDRS=$(join_by , $(echo "${ALL_CLUSTER_CIDRS}"))
+ALL_CLUSTER_NETTAGS=$(gcloud compute instances list --project ${PROJECT_ID} --format='value(tags.items.[0])' | sort | uniq)
+ALL_CLUSTER_NETTAGS=$(join_by , $(echo "${ALL_CLUSTER_NETTAGS}"))
+
+gcloud compute firewall-rules create istio-multicluster-pods \
+    --allow=tcp,udp,icmp,esp,ah,sctp \
+    --direction=INGRESS \
+    --priority=900 \
+    --source-ranges="${ALL_CLUSTER_CIDRS}" \
+    --target-tags="${ALL_CLUSTER_NETTAGS}" --quiet
 
 ${WORKDIR}/lab/workload/ob.sh
 
