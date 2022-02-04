@@ -98,7 +98,7 @@ conditions:
 - conditionThreshold:
     comparison: COMPARISON_GT
     duration: 0s
-    filter: select_slo_burn_rate("${SLO_NAME}","3600s")
+    filter: select_slo_burn_rate("${SLO_NAME}","300s")
     thresholdValue: 1.0
     trigger:
       count: 1
