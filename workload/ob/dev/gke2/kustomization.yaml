@@ -17,6 +17,7 @@ kind: Kustomization
 namespace: "ob"
 resources:
   - ob-namespace.yaml
+  - sa-workload-monitoring.yaml
   - services-all.yaml
   - deployments-cart-recommendation.yaml
   - deployments-shipping-ad-loadgen.yaml

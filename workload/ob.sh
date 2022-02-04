@@ -31,7 +31,28 @@ ASM_REV_LABEL=asm-managed
 sed -e "s/ASM_REV_LABEL/${ASM_REV_LABEL}/" ${SCRIPT_DIR}/ob/dev/gke1/ob-namespace-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke1/ob-namespace-patch.yaml
 sed -e "s/ASM_REV_LABEL/${ASM_REV_LABEL}/" ${SCRIPT_DIR}/ob/dev/gke2/ob-namespace-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke2/ob-namespace-patch.yaml
 
-## Stage 2: Deploy
+## Stage 2: Workload Identity for services
+GSA_NAME=workload-minimal-monitoring
+gcloud iam service-accounts create ${GSA_NAME} \
+    --description="Minimal identity for workload monitoring"
+
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member "serviceAccount:${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --role roles/cloudtrace.agent
+
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member "serviceAccount:${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --role roles/monitoring.metricWriter
+  
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member "serviceAccount:${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --role roles/cloudprofiler.agent
+  
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member "serviceAccount:${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
+  --role roles/clouddebugger.agent
+
+## Stage 3: Deploy
 echo -e "\n"
 echo_cyan "*** Deploying Online Boutique app to ${GKE1} cluster... ***\n"
 kubectl --context=${GKE1} apply -k ${SCRIPT_DIR}/ob/dev/gke1
@@ -39,7 +60,7 @@ echo -e "\n"
 echo_cyan "*** Deploying Online Boutique app to ${GKE2} cluster... ***\n"
 kubectl --context=${GKE2} apply -k ${SCRIPT_DIR}/ob/dev/gke2
 
-## Stage 3: Validation
+## Stage 4: Validation
 echo -e "\n"
 echo_cyan "*** Verifying all Deployments are Ready in all clusters... ***\n"
 is_deployment_ready ${GKE1} ${DEV_NS} emailservice

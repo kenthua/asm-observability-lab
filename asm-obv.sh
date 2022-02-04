@@ -17,6 +17,7 @@ export ASM_CHANNEL=regular
 export ASM_LABEL=asm-managed
 export KUBECONFIG=${WORKDIR}/asm-kubeconfig
 export GSA_READER=asm-reader-sa
+alias k=kubectl
 EOF
 
 source ${WORKDIR}/vars.sh

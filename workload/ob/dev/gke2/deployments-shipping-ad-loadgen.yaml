@@ -25,7 +25,7 @@ spec:
       labels:
         app: shippingservice
     spec:
-      serviceAccountName: default
+      serviceAccountName: workload-monitoring
       containers:
       - name: server
         image: gcr.io/google-samples/microservices-demo/shippingservice:v0.3.4
@@ -70,7 +70,7 @@ spec:
       labels:
         app: adservice
     spec:
-      serviceAccountName: default
+      serviceAccountName: workload-monitoring
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
@@ -120,7 +120,7 @@ spec:
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
-      serviceAccountName: default
+      serviceAccountName: workload-monitoring
       terminationGracePeriodSeconds: 5
       restartPolicy: Always
       initContainers:
