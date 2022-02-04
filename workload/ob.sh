@@ -52,8 +52,8 @@ ASM_REV_LABEL=asm-managed
 sed -e "s/ASM_REV_LABEL/${ASM_REV_LABEL}/" ${SCRIPT_DIR}/ob/dev/gke1/ob-namespace-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke1/ob-namespace-patch.yaml
 sed -e "s/ASM_REV_LABEL/${ASM_REV_LABEL}/" ${SCRIPT_DIR}/ob/dev/gke2/ob-namespace-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke2/ob-namespace-patch.yaml
 
-sed -e "s/GSA/${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com}/" ${SCRIPT_DIR}/ob/dev/gke1/sa-workload-monitoring-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke1/sa-workload-monitoring-patch.yaml
-sed -e "s/GSA/${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com}/" ${SCRIPT_DIR}/ob/dev/gke2/sa-workload-monitoring-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke2/sa-workload-monitoring-patch.yaml
+sed -e "s/GSA/${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com/" ${SCRIPT_DIR}/ob/dev/gke1/sa-workload-monitoring-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke1/sa-workload-monitoring-patch.yaml
+sed -e "s/GSA/${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com/" ${SCRIPT_DIR}/ob/dev/gke2/sa-workload-monitoring-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke2/sa-workload-monitoring-patch.yaml
 
 ## Stage 3: Deploy
 echo -e "\n"
