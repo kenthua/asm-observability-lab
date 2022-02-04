@@ -27,6 +27,7 @@ export DEV_NS=ob
 
 ## Stage 1: Workload Identity for services
 GSA_NAME=workload-minimal-monitoring
+KSA_NAME=workload-monitoring
 gcloud iam service-accounts create ${GSA_NAME} \
     --description="Minimal identity for workload monitoring"
 
@@ -45,6 +46,10 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
 gcloud projects add-iam-policy-binding ${PROJECT_ID} \
   --member "serviceAccount:${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com" \
   --role roles/clouddebugger.agent
+
+gcloud iam service-accounts add-iam-policy-binding GSA_NAME@GSA_PROJECT.iam.gserviceaccount.com \
+    --role roles/iam.workloadIdentityUser \
+    --member "serviceAccount:${PROJECT_ID}.svc.id.goog[${DEV_NS}/${KSA_NAME}]"
 
 ## Stage 2: Preparation
 ASM_REV_LABEL=asm-managed
