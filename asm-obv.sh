@@ -103,18 +103,32 @@ do
     fi
 done
 
+## manual control plane
 
-kubectl --context=${CLUSTER_1} wait --for=condition=established crd controlplanerevisions.mesh.cloud.google.com --timeout=5m
-kubectl --context=${CLUSTER_2} wait --for=condition=established crd controlplanerevisions.mesh.cloud.google.com --timeout=5m
+# kubectl --context=${CLUSTER_1} wait --for=condition=established crd controlplanerevisions.mesh.cloud.google.com --timeout=5m
+# kubectl --context=${CLUSTER_2} wait --for=condition=established crd controlplanerevisions.mesh.cloud.google.com --timeout=5m
 
+## Cluster_1
+# kubectl --context=${CLUSTER_1} apply -f ${WORKDIR}/lab/asm/namespace-istio-system.yaml
+# sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ${WORKDIR}/lab/asm/controlplanerevision-asm-managed.yaml | kubectl --context=${CLUSTER_1} apply -f -
 
-# Cluster_1
-kubectl --context=${CLUSTER_1} apply -f ${WORKDIR}/lab/asm/namespace-istio-system.yaml
-sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ${WORKDIR}/lab/asm/controlplanerevision-asm-managed.yaml | kubectl --context=${CLUSTER_1} apply -f -
+## Cluster_2
+# kubectl --context=${CLUSTER_2} apply -f ${WORKDIR}/lab/asm/namespace-istio-system.yaml
+# sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ${WORKDIR}/lab/asm/controlplanerevision-asm-managed.yaml | kubectl --context=${CLUSTER_2} apply -f -
 
-# Cluster_2
-kubectl --context=${CLUSTER_2} apply -f ${WORKDIR}/lab/asm/namespace-istio-system.yaml
-sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ${WORKDIR}/lab/asm/controlplanerevision-asm-managed.yaml | kubectl --context=${CLUSTER_2} apply -f -
+kubectl --context=${CLUSTER_1} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
+kubectl --context=${CLUSTER_2} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
+
+## auto control plane
+## https://cloud.google.com/service-mesh/docs/managed/auto-control-plane-with-fleet#enable
+gcloud alpha container hub mesh update \
+    --control-plane automatic \
+    --membership ${CLUSTER_1} \
+    --project ${PROJECT_ID}
+gcloud alpha container hub mesh update \
+    --control-plane automatic \
+    --membership ${CLUSTER_2} \
+    --project ${PROJECT_ID}
 
 kubectl --context=${CLUSTER_1} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
 kubectl --context=${CLUSTER_2} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
@@ -155,10 +169,17 @@ ${WORKDIR}/lab/workload/ops/asm-slo.sh \
 
 kubectl --context ${CLUSTER_1} \
   -n ob \
-  apply -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-50fault.yaml
+  apply -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-90fault.yaml
+
+kubectl --context ${CLUSTER_1} \
+  -n ob \
+  delete -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-90fault.yaml
 
 # reload page
 21:03:50 21:07:00
 #out of budget
+
+00:01:54 00:04:00
+00:06:00 alert
 
 21:08:15 - alert
