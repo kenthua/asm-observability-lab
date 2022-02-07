@@ -5,7 +5,7 @@ OAUTH_TOKEN=$(gcloud auth application-default print-access-token)
 #SERVICE_NAMES=("checkoutservice")
 #LATENCIES=("0.1s")
 SERVICE_NAMES=("adservice" "cartservice" "checkoutservice" "currencyservice" "emailservice" "frontend" "paymentservice" "productcatalogservice" "recommendationservice" "shippingservice")
-LATENCIES=("0.005s" "0.1s" "0.5s" "0.003s" "0.004s" "0.475s" "0.004s" "0.0015s" "0.135s" "0.002s")
+LATENCIES=("0.005s" "0.1s" "0.5s" "0.02s" "0.004s" "0.475s" "0.004s" "0.002s" "0.135s" "0.002s")
 
 for IDX in ${!SERVICE_NAMES[@]}
 do
@@ -98,7 +98,7 @@ conditions:
 - conditionThreshold:
     comparison: COMPARISON_GT
     duration: 0s
-    filter: select_slo_burn_rate("${SLO_NAME}","3600s")
+    filter: select_slo_burn_rate("${SLO_NAME}","300s")
     thresholdValue: 1.0
     trigger:
       count: 1
