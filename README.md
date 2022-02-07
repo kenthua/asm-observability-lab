@@ -1,10 +1,12 @@
 ```
+gcloud config set project ${GOOGLE_CLOUD_PROJECT}
+
 mkdir -p asm-observability && cd asm-observability && export WORKDIR=$(pwd)
 
 git clone https://github.com/kenthua/asm-observability-lab ${WORKDIR}/lab
 cd ${WORKDIR}/lab
 
-${WORKDIR}/lab/setup.sh
+${WORKDIR}/lab/setup.sh ${GOOGLE_CLOUD_PROJECT}
 
 # Need to let the app settle itself before we try to measure, otherwise availability is impacted if SLOs are configured right after app deployment
 sleep 300
