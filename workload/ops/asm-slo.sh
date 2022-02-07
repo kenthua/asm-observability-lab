@@ -1,4 +1,4 @@
-PROJECT_ID=${1:-${GOOGLE_PROJECT}}
+PROJECT_ID=${1:-${GOOGLE_CLOUD_PROJECT}}
 NAMESPACE=${2:-ob}
 
 OAUTH_TOKEN=$(gcloud auth application-default print-access-token)

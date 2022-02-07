@@ -17,7 +17,7 @@ echo "Wait Done"
 ```
 # lab
 ${WORKDIR}/lab/workload/ops/asm-slo.sh \
-  ${PROJECT_ID} ob
+  ${GOOGLE_CLOUD_PROJECT} ob
 
 kubectl --context ${CLUSTER_1} \
   -n ob \
