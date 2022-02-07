@@ -1,4 +1,4 @@
-PROJECT_ID=qwiklabs-gcp-00-59a1f47dfba0
+PROJECT_ID=qwiklabs-gcp-00-d3f8da24bbaa
 mkdir -p asm-observability && cd asm-observability && export WORKDIR=$(pwd)
 
 gcloud config set project ${PROJECT_ID}
@@ -38,6 +38,7 @@ gkeconnect.googleapis.com \
 gkehub.googleapis.com \
 multiclusteringress.googleapis.com \
 multiclusterservicediscovery.googleapis.com \
+multiclustermetering.googleapis.com \
 stackdriver.googleapis.com \
 sourcerepo.googleapis.com \
 cloudresourcemanager.googleapis.com
@@ -101,6 +102,8 @@ do
     if [ $(gcloud beta container hub mesh describe --format=json | grep OK | wc -l) == "2" ]; then
         break;
     fi
+    sleep 5;
+    echo "Sleep and then check..."
 done
 
 ## manual control plane
@@ -116,8 +119,8 @@ done
 # kubectl --context=${CLUSTER_2} apply -f ${WORKDIR}/lab/asm/namespace-istio-system.yaml
 # sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ${WORKDIR}/lab/asm/controlplanerevision-asm-managed.yaml | kubectl --context=${CLUSTER_2} apply -f -
 
-kubectl --context=${CLUSTER_1} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
-kubectl --context=${CLUSTER_2} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
+# kubectl --context=${CLUSTER_1} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
+# kubectl --context=${CLUSTER_2} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
 
 ## auto control plane
 ## https://cloud.google.com/service-mesh/docs/managed/auto-control-plane-with-fleet#enable
@@ -164,22 +167,23 @@ gcloud compute firewall-rules create istio-multicluster-pods \
 
 ${WORKDIR}/lab/workload/ob.sh
 
+# lab
+
 ${WORKDIR}/lab/workload/ops/asm-slo.sh \
   ${PROJECT_ID} ob
 
 kubectl --context ${CLUSTER_1} \
   -n ob \
-  apply -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-90fault.yaml
+  apply -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-50fault.yaml
 
 kubectl --context ${CLUSTER_1} \
   -n ob \
-  delete -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-90fault.yaml
+  delete -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-50fault.yaml
 
 # reload page
 21:03:50 21:07:00
 #out of budget
+21:08:15 - alert
 
 00:01:54 00:04:00
-00:06:00 alert
-
-21:08:15 - alert
+00:06:00 - alert
