@@ -1,5 +1,4 @@
-PROJECT_ID=qwiklabs-gcp-00-d3f8da24bbaa
-mkdir -p asm-observability && cd asm-observability && export WORKDIR=$(pwd)
+PROJECT_ID=${1:-${GOOGLE_CLOUD_PROJECT}}
 
 gcloud config set project ${PROJECT_ID}
 
@@ -42,9 +41,6 @@ multiclustermetering.googleapis.com \
 stackdriver.googleapis.com \
 sourcerepo.googleapis.com \
 cloudresourcemanager.googleapis.com
-
-git clone https://github.com/kenthua/asm-observability-lab ${WORKDIR}/lab
-cd ${WORKDIR}/lab
 
 gcloud container clusters create ${CLUSTER_1} \
   --project ${PROJECT_ID} \
@@ -166,24 +162,3 @@ gcloud compute firewall-rules create istio-multicluster-pods \
     --target-tags="${ALL_CLUSTER_NETTAGS}" --quiet
 
 ${WORKDIR}/lab/workload/ob.sh
-
-# lab
-
-${WORKDIR}/lab/workload/ops/asm-slo.sh \
-  ${PROJECT_ID} ob
-
-kubectl --context ${CLUSTER_1} \
-  -n ob \
-  apply -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-50fault.yaml
-
-kubectl --context ${CLUSTER_1} \
-  -n ob \
-  delete -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-50fault.yaml
-
-# reload page
-21:03:50 21:07:00
-#out of budget
-21:08:15 - alert
-
-00:01:54 00:04:00
-00:06:00 - alert
