@@ -99,7 +99,7 @@ do
         break;
     fi
     sleep 5;
-    echo "Sleep and then check..."
+    echo "Registration -- Sleep and then check..."
 done
 
 ## manual control plane
@@ -128,6 +128,16 @@ gcloud alpha container hub mesh update \
     --control-plane automatic \
     --membership ${CLUSTER_2} \
     --project ${PROJECT_ID}
+
+# wait for crd provisioning
+while true 
+do
+    if [ $(kubectl get controlplanerevision asm-managed -n istio-system --no-headers | grep asm-managed | wc -l) == "1" ]; then
+        break;
+    fi
+    sleep 5;
+    echo "Mesh CRD - Sleep and then check..."
+done
 
 kubectl --context=${CLUSTER_1} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
 kubectl --context=${CLUSTER_2} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
