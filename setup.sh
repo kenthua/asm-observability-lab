@@ -172,3 +172,6 @@ gcloud compute firewall-rules create istio-multicluster-pods \
     --target-tags="${ALL_CLUSTER_NETTAGS}" --quiet
 
 ${WORKDIR}/lab/workload/ob.sh
+
+${WORKDIR}/lab/workload/ops/services-dashboard.sh \
+  ${WORKDIR}/lab/workload/ops/services-dashboard-prod.json_tmpl
