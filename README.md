@@ -16,6 +16,12 @@ echo "Wait Done"
 
 ```
 # lab
+source ~/asm-observability/vars.sh
+
+echo "*** Access Online Boutique app by navigating to the following address: ***\n"
+echo -n "http://"
+kubectl --context=${CLUSTER_1} -n asm-gateways get svc asm-ingressgateway -o jsonpath={.status.loadBalancer.ingress[].ip}
+
 ${WORKDIR}/lab/workload/ops/asm-slo.sh \
   ${GOOGLE_CLOUD_PROJECT} ob
 
