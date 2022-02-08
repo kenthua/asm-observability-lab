@@ -15,7 +15,7 @@ echo "Wait Done"
 ```
 
 ```
-# lab
+# Setup the lab SLOs
 source ~/asm-observability/vars.sh
 
 ${WORKDIR}/lab/workload/ops/asm-slo.sh \
@@ -24,6 +24,7 @@ ${WORKDIR}/lab/workload/ops/asm-slo.sh \
 echo "*** Access Online Boutique app by navigating to the following address: ***\n"
 echo "http://$(kubectl --context=${CLUSTER_1} -n asm-gateways get svc asm-ingressgateway -o jsonpath={.status.loadBalancer.ingress[].ip})"
 
+# Create the fault to generate errors
 kubectl --context ${CLUSTER_1} \
   -n ob \
   apply -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-50fault.yaml
