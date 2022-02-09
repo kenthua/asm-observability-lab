@@ -1,3 +1,4 @@
+Run this in cloud shell
 ```
 gcloud config set project ${GOOGLE_CLOUD_PROJECT}
 
@@ -14,10 +15,12 @@ uptime
 echo "Wait Done"
 ```
 
+This is where the lab begins scripted or manually [here](./docs/asm-slo.md)
 ```
-# Setup the lab SLOs
+# Setup the shell variables
 source ~/asm-observability/vars.sh
 
+# Generate the SLOs
 ${WORKDIR}/lab/workload/ops/asm-slo.sh \
   ${GOOGLE_CLOUD_PROJECT} ob
 
@@ -30,6 +33,7 @@ kubectl --context ${CLUSTER_1} \
   apply -f ${WORKDIR}/lab/workload/ops/virtualservice-cartservice-50fault.yaml
 ```
 
+Delete the virtual service fault
 ```
 kubectl --context ${CLUSTER_1} \
   -n ob \
