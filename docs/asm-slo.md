@@ -24,7 +24,7 @@ Gain an understanding of the health of your services.  You can do this by creati
 
     <img src="./img/asm-slo-latency-request.png" width=30% height=30%>
 
-1. SLI details are now required and we need to set our threshold.  ASM collects the raw data over a period of time and calculated as percentiles. Observe what the 50th, 95th and 99th percentiles are.  Enter a `3`ms for the latency threshold.
+1. SLI details are now required and we need to set our threshold.  ASM collects the raw data over a period of time and calculated as percentiles. Observe what the 50th, 95th and 99th percentiles are.  Enter `5`ms for the latency threshold.
 
     > NOTE: Set a reasonable threshold, for instance the latency shouldn't be too low that it would be difficult to maintain with minimal impact to your end users / service.  Additional details on [setting SLI/SLOs](https://cloud.google.com/service-mesh/docs/observability/design-slo). 
 
@@ -110,6 +110,14 @@ Gain an understanding of the health of your services.  You can do this by creati
     ```
 
     <img src="./img/asm-slo-cloud-monitoring-incidents.png" width=30% height=30%>    
+
+1. The ASM dashboard as shown above shows the error rate for the respective services.  The same metrics can also be shown using Cloud Monitoring.  You can do this by using a custom dashboard created for this workshop.  Navigate from the hamburger menu **Monitoring -> Dashboards -> Services Dashboard - Production**
+
+    <img src="./img/ops-dashboard.png" width=30% height=30%>
+
+1. Multiple charts are available, but note in the screenshot are the `Request Rates` for each service as well as `Error Rates` of services, in this case the 500 errors from the fault we added, which affects `frontend` and `checkout`.
+
+    <img src="./img/ops-metrics.png" width=30% height=30%>
 
 1. The service overview provides a general view.
 
