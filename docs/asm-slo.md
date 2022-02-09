@@ -111,14 +111,6 @@ Gain an understanding of the health of your services.  You can do this by creati
 
     <img src="./img/asm-slo-cloud-monitoring-incidents.png" width=30% height=30%>    
 
-1. The ASM dashboard as shown above shows the error rate for the respective services.  The same metrics can also be shown using Cloud Monitoring.  You can do this by using a custom dashboard created for this workshop.  Navigate from the hamburger menu **Monitoring -> Dashboards -> Services Dashboard - Production**
-
-    <img src="./img/ops-dashboard.png" width=30% height=30%>
-
-1. Multiple charts are available, but note in the screenshot are the `Request Rates` for each service as well as `Error Rates` of services, in this case the 500 errors from the fault we added, which affects `frontend` and `checkout`.
-
-    <img src="./img/ops-metrics.png" width=30% height=30%>
-
 1. The service overview provides a general view.
 
     <img src="./img/asm-slo-service-health-overview.png" width=30% height=30%>
@@ -126,3 +118,13 @@ Gain an understanding of the health of your services.  You can do this by creati
 1. The `checkoutservice` details
 
     <img src="./img/asm-slo-alert-timeline.png" width=30% height=30%>
+
+## Cloud Monitoring
+
+1. The ASM dashboard as shown above shows the error rate for the respective services.  The same metrics can also be shown using Cloud Monitoring.  You can do this by using a custom dashboard created for this workshop.  Navigate from the hamburger menu **Monitoring -> Dashboards -> Services Dashboard - Production**
+
+    <img src="./img/ops-dashboard.png" width=30% height=30%>
+
+1. Multiple charts are available, but note in the screenshot are the `Request Rates` for each service as well as `Error Rates` of services, in this case the 500 errors from the fault we added, which affects `frontend` and `checkout`.
+
+    <img src="./img/ops-metrics.png" width=30% height=30%>
