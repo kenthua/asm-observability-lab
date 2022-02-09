@@ -70,7 +70,7 @@ Gain an understanding of the health of your services.  You can do this by creati
 
     > NOTE: In addition to creating a set of latency expectations for our services, we also created one avaialbility SLO for the `checkoutservice` of 99.9% for demonstration purposes.
 
-1. Navigate from the hamburger menu **Anthos > Service Mesh**
+1. Navigate from the hamburger menu, **Anthos > Service Mesh**
 
 1. Select `ob` in the Namespace drop-down.
 
@@ -121,7 +121,7 @@ Gain an understanding of the health of your services.  You can do this by creati
 
 ## Cloud Monitoring
 
-1. The ASM dashboard as shown above shows the error rate for the respective services.  The same metrics can also be shown using Cloud Monitoring.  You can do this by using a custom dashboard created for this workshop.  Navigate from the hamburger menu **Monitoring -> Dashboards -> Services Dashboard - Production**
+1. Metrics can also be queried and observed using Cloud Monitoring.  A custom dashboard in Cloud Monitoring was created for this lab to show some of the important signals.  Navigate from the hamburger menu, **Monitoring > Dashboards > Services Dashboard - Production**
 
     <img src="./img/ops-dashboard.png" width=30% height=30%>
 
