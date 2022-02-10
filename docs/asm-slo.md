@@ -53,6 +53,9 @@ Gain an understanding of the health of your services.  You can do this by creati
 
 1. You can manually use the UI to create individual SLOs.  However, we can use following script which uses the API to generate SLOs & alerts for the remaining applicable services.
     ```
+    # Setup the shell variables
+    source ~/asm-observability/vars.sh
+
     ${WORKDIR}/lab/workload/ops/asm-slo.sh \
       ${PROJECT_ID} ob
     ```
