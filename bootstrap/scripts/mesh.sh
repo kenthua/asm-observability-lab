@@ -6,6 +6,7 @@ echo -e "CLUSTER is ${CLUSTER}"
 echo -e "LOCATION is ${LOCATION}"
 echo -e "ASM CHANNEL is ${ASM_CHANNEL}"
 echo -e "ASM LABEL is ${ASM_LABEL}"
+echo -e "MODULE PATH is ${MODULE_PATH}"
 
 # Idempotent command to enable mesh
 gcloud beta container hub mesh enable --project=${PROJECT}
@@ -23,16 +24,16 @@ done
 kubectl wait --for=condition=established crd controlplanerevisions.mesh.cloud.google.com --timeout=10m
 
 # Create istio ns
-kubectl apply -f ../k8s/namespace-istio-system.yaml
+kubectl apply -f ${MODULE_PATH}/k8s/namespace-istio-system.yaml
 
 # Apply Control Plane CR
-sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ../k8s/controlplanerevision-asm-managed.yaml | kubectl apply -f -
+sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ${MODULE_PATH}/k8s/controlplanerevision-asm-managed.yaml | kubectl apply -f -
 
 # Verify control plane is provisioned
 kubectl wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
 
 # Create ASM gateway ns
-sed -e "s/ASM_LABEL/${ASM_LABEL}/" ../k8s/namespace-asm-gateways.yaml | kubectl apply -f -
+sed -e "s/ASM_LABEL/${ASM_LABEL}/" ${MODULE_PATH}/k8s/namespace-asm-gateways.yaml | kubectl apply -f -
 
 # Apply ASM Gateway
-kubectl apply -f ../k8s/asm-ingressgateway.yaml
+kubectl apply -f ${MODULE_PATH}/k8s/asm-ingressgateway.yaml
