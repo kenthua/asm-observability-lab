@@ -36,8 +36,18 @@ variable "apis" {
   type        = list(string)
   default = [
     "container.googleapis.com",
+    "stackdriver.googleapis.com",
+    "monitoring.googleapis.com",
+    "cloudtrace.googleapis.com",
     "logging.googleapis.com",
+    "meshca.googleapis.com",
+    "meshtelemetry.googleapis.com",
+    "meshconfig.googleapis.com",
+    "multiclustermetering.googleapis.com",
+    "iamcredentials.googleapis.com",
     "iam.googleapis.com",
+    "gkeconnect.googleapis.com",
+    "gkehub.googleapis.com",
     "compute.googleapis.com",
   ]
 }
@@ -60,7 +70,7 @@ variable "kubeconfig" {
     gke_prod_2-kubeconfig = string
   })
   default = {
-    gke_prod_1-kubeconfig = "/workspace/gke-prod_1-kubeconfig"
-    gke_prod_2-kubeconfig = "/workspace/gke-prod_2-kubeconfig"
+    gke_prod_1-kubeconfig = "/tmp/gke-prod_1-kubeconfig"
+    gke_prod_2-kubeconfig = "/tmp/gke-prod_2-kubeconfig"
   }
 }
