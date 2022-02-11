@@ -108,12 +108,12 @@ done
 # kubectl --context=${CLUSTER_2} wait --for=condition=established crd controlplanerevisions.mesh.cloud.google.com --timeout=5m
 
 ## Cluster_1
-# kubectl --context=${CLUSTER_1} apply -f ${WORKDIR}/lab/asm/namespace-istio-system.yaml
-# sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ${WORKDIR}/lab/asm/controlplanerevision-asm-managed.yaml | kubectl --context=${CLUSTER_1} apply -f -
+# kubectl --context=${CLUSTER_1} apply -f ${WORKDIR}/bootstrap/k8s/namespace-istio-system.yaml
+# sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ${WORKDIR}/bootstrap/k8s/controlplanerevision-asm-managed.yaml | kubectl --context=${CLUSTER_1} apply -f -
 
 ## Cluster_2
-# kubectl --context=${CLUSTER_2} apply -f ${WORKDIR}/lab/asm/namespace-istio-system.yaml
-# sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ${WORKDIR}/lab/asm/controlplanerevision-asm-managed.yaml | kubectl --context=${CLUSTER_2} apply -f -
+# kubectl --context=${CLUSTER_2} apply -f ${WORKDIR}/bootstrap/k8s/namespace-istio-system.yaml
+# sed -e "s/ASM_CHANNEL/${ASM_CHANNEL}/" ${WORKDIR}/bootstrap/k8s/controlplanerevision-asm-managed.yaml | kubectl --context=${CLUSTER_2} apply -f -
 
 # kubectl --context=${CLUSTER_1} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
 # kubectl --context=${CLUSTER_2} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
@@ -143,12 +143,12 @@ kubectl --context=${CLUSTER_1} wait --for=condition=ProvisioningFinished control
 kubectl --context=${CLUSTER_2} wait --for=condition=ProvisioningFinished controlplanerevision asm-managed -n istio-system --timeout 600s
 
 # Cluster_1
-sed -e "s/ASM_LABEL/${ASM_LABEL}/" ${WORKDIR}/lab/asm/namespace-asm-gateways.yaml | kubectl --context=${CLUSTER_1} apply -f -
-kubectl --context=${CLUSTER_1} apply -f ${WORKDIR}/lab/asm/asm-ingressgateway.yaml
+sed -e "s/ASM_LABEL/${ASM_LABEL}/" ${WORKDIR}/bootstrap/k8s/namespace-asm-gateways.yaml | kubectl --context=${CLUSTER_1} apply -f -
+kubectl --context=${CLUSTER_1} apply -f ${WORKDIR}/bootstrap/k8s/asm-ingressgateway.yaml
 
 # Cluster_2
-sed -e "s/ASM_LABEL/${ASM_LABEL}/" ${WORKDIR}/lab/asm/namespace-asm-gateways.yaml | kubectl --context=${CLUSTER_2} apply -f -
-kubectl --context=${CLUSTER_2} apply -f ${WORKDIR}/lab/asm/asm-ingressgateway.yaml
+sed -e "s/ASM_LABEL/${ASM_LABEL}/" ${WORKDIR}/bootstrap/k8s/namespace-asm-gateways.yaml | kubectl --context=${CLUSTER_2} apply -f -
+kubectl --context=${CLUSTER_2} apply -f ${WORKDIR}/bootstrap/k8s/asm-ingressgateway.yaml
 
 curl https://storage.googleapis.com/csm-artifacts/asm/asmcli > asmcli
 chmod +x asmcli
