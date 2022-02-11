@@ -15,6 +15,30 @@ uptime
 echo "Wait Done"
 ```
 
+Cloud Shell TF version
+```
+gcloud config set project ${GOOGLE_CLOUD_PROJECT}
+
+export PROJECT_ID=${GOOGLE_CLOUD_PROJECT}
+
+mkdir -p asm-observability && cd asm-observability && export WORKDIR=$(pwd)
+
+git clone https://github.com/kenthua/asm-observability-lab ${WORKDIR}/lab
+cd ${WORKDIR}/lab
+
+gcloud config set project ${PROJECT_ID}
+gsutil mb -p ${PROJECT_ID} gs://${PROJECT_ID}
+gsutil versioning set on gs://${PROJECT_ID}
+
+cd ${WORKDIR}/lab/bootstrap
+envsubst < backend.tf_tmpl > backend.tf
+envsubst < variables.tfvars_tmpl > variables.tfvars
+
+terraform init -var-file=variables.tfvars
+terraform plan -var-file=variables.tfvars
+terraform apply -auto-approve -var-file=variables.tfvars
+```
+
 This is where the lab begins scripted or manually [here](./docs/asm-slo.md)
 ```
 # Setup the shell variables
