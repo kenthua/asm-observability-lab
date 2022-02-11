@@ -89,10 +89,12 @@ resource "null_resource" "exec_mesh_1" {
     interpreter = ["bash", "-exc"]
     command     = "${path.module}/scripts/mesh.sh"
     environment = {
-      CLUSTER    = google_gke_hub_membership.membership_1.membership_id
-      LOCATION   = google_container_cluster.gke_prod_1.location
-      PROJECT    = var.project_id
-      KUBECONFIG = "/tmp/${google_container_cluster.gke_prod_1.name}-kubeconfig"
+      CLUSTER     = google_gke_hub_membership.membership_1.membership_id
+      LOCATION    = google_container_cluster.gke_prod_1.location
+      PROJECT     = var.project_id
+      KUBECONFIG  = "/tmp/${google_container_cluster.gke_prod_1.name}-kubeconfig"
+      ASM_CHANNEL = var.asm_channel
+      ASM_LABEL   = var.asm_label
     }
   }
   triggers = {
@@ -110,6 +112,8 @@ resource "null_resource" "exec_mesh_2" {
       LOCATION   = google_container_cluster.gke_prod_2.location
       PROJECT    = var.project_id
       KUBECONFIG = "/tmp/${google_container_cluster.gke_prod_2.name}-kubeconfig"
+      ASM_CHANNEL = var.asm_channel
+      ASM_LABEL   = var.asm_label
     }
   }
   triggers = {

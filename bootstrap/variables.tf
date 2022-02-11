@@ -74,3 +74,16 @@ variable "kubeconfig" {
     gke_prod_2-kubeconfig = "/tmp/gke-prod_2-kubeconfig"
   }
 }
+
+variable "asm_channel" {
+    description = "ASM release channel"
+    type        = string
+    default = "regular"
+}
+
+variable "asm_label" {
+    description = "ASM revision label"
+    type        = string
+    default = "asm-managed"
+}
+
