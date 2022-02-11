@@ -42,14 +42,14 @@ resource "google_container_cluster" "gke_prod_2" {
   ]
 }
 
-module "gke_auth" "gke_prod_1" {
+module "gke_auth_1" {
   source       = "terraform-google-modules/kubernetes-engine/google//modules/auth"
   project_id   = var.project_id
   cluster_name = google_container_cluster.gke_prod_1.name
   location     = google_container_cluster.gke_prod_1.location
 }
 
-module "gke_auth" "gke_prod_2" {
+module "gke_auth_2" {
   source       = "terraform-google-modules/kubernetes-engine/google//modules/auth"
   project_id   = var.project_id
   cluster_name = google_container_cluster.gke_prod_2.name
@@ -57,17 +57,17 @@ module "gke_auth" "gke_prod_2" {
 }
 
 resource "local_file" "gke_prod_1_kubeconfig" {
-  content  = module.gke_auth.gke_prod_1.kubeconfig_raw
+  content  = module.gke_auth_1.kubeconfig_raw
   filename = var.kubeconfig.gke_prod_1-kubeconfig
 }
 
 resource "local_file" "gke_prod_2_kubeconfig" {
-  content  = module.gke_auth.gke_prod_2.kubeconfig_raw
+  content  = module.gke_auth_2.kubeconfig_raw
   filename = var.kubeconfig.gke_prod_2-kubeconfig
 }
 
-resource "google_gke_hub_membership" "membership" {
-  membership_id = gke-prod_1.name
+resource "google_gke_hub_membership" "membership_1" {
+  membership_id = google_container_cluster.gke_prod_1.name
   endpoint {
     gke_cluster {
       resource_link = "//container.googleapis.com/${google_container_cluster.gke_prod_1.id}"
@@ -75,8 +75,8 @@ resource "google_gke_hub_membership" "membership" {
   }
 }
 
-resource "google_gke_hub_membership" "membership" {
-  membership_id = gke-prod_2.name
+resource "google_gke_hub_membership" "membership_2" {
+  membership_id = google_container_cluster.gke_prod_2.name
   endpoint {
     gke_cluster {
       resource_link = "//container.googleapis.com/${google_container_cluster.gke_prod_2.id}"
@@ -84,7 +84,7 @@ resource "google_gke_hub_membership" "membership" {
   }
 }
 
-resource "null_resource" "exec_mesh" {
+resource "null_resource" "exec_mesh_1" {
   provisioner "local-exec" {
     interpreter = ["bash", "-exc"]
     command     = "${path.module}/scripts/mesh.sh"
@@ -101,7 +101,7 @@ resource "null_resource" "exec_mesh" {
   }
 }
 
-resource "null_resource" "exec_mesh" {
+resource "null_resource" "exec_mesh_2" {
   provisioner "local-exec" {
     interpreter = ["bash", "-exc"]
     command     = "${path.module}/scripts/mesh.sh"

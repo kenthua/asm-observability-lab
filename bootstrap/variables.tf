@@ -45,11 +45,22 @@ variable "apis" {
 variable "gke_prod_1" {
     description = "GKE prod cluster name"
     type        = string
-    default = "gke-prod_1"
+    default = "gke-prod-1"
 }
 
 variable "gke_prod_2" {
     description = "GKE prod cluster name"
     type        = string
-    default = "gke-prod_2"
+    default = "gke-prod-2"
+}
+
+variable "kubeconfig" {
+  type = object({
+    gke_prod_1-kubeconfig = string
+    gke_prod_2-kubeconfig = string
+  })
+  default = {
+    gke_prod_1-kubeconfig = "/workspace/gke-prod_1-kubeconfig"
+    gke_prod_2-kubeconfig = "/workspace/gke-prod_2-kubeconfig"
+  }
 }
