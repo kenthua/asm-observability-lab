@@ -1,4 +1,5 @@
-Run this in cloud shell
+# Install
+## Scripted
 ```
 gcloud config set project ${GOOGLE_CLOUD_PROJECT}
 
@@ -15,7 +16,7 @@ uptime
 echo "Wait Done"
 ```
 
-Cloud Shell TF version
+## Terraform
 ```
 gcloud config set project ${GOOGLE_CLOUD_PROJECT}
 
@@ -69,6 +70,7 @@ ${WORKDIR}/lab/workload/ops/services-dashboard.sh \
   ${WORKDIR}/lab/workload/ops/services-dashboard-prod.json_tmpl
 ```
 
+# Labs
 This is where the lab begins scripted or manually [here](./docs/asm-slo.md)
 ```
 # Setup the shell variables
