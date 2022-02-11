@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # Verify imported varables
+echo -e "PROJECT_ID is ${PROJECT_ID}"
+echo -e "PROJECT_NUMBER is ${PROJECT_NUMBER}"
 echo -e "KUBECONFIG is ${KUBECONFIG}"
 echo -e "CLUSTER is ${CLUSTER}"
 echo -e "LOCATION is ${LOCATION}"
@@ -22,6 +24,11 @@ done
 
 # Verify CRD is established in the cluster
 kubectl wait --for=condition=established crd controlplanerevisions.mesh.cloud.google.com --timeout=10m
+
+# apply mesh_id label
+gcloud container clusters update ${CLUSTER} \
+    --region ${LOCATION} \
+    --update-labels=mesh_id=${PROJECT_NUMBER}
 
 # Create istio ns
 kubectl apply -f ${MODULE_PATH}/k8s/namespace-istio-system.yaml

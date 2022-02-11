@@ -52,13 +52,13 @@ variable "apis" {
   ]
 }
 
-variable "gke_prod_1" {
+variable "cluster_1" {
     description = "GKE prod cluster name"
     type        = string
     default = "gke-prod-1"
 }
 
-variable "gke_prod_2" {
+variable "cluster_2" {
     description = "GKE prod cluster name"
     type        = string
     default = "gke-prod-2"

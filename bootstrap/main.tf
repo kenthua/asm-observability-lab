@@ -25,7 +25,7 @@ module "enable_google_apis" {
 }
 
 resource "google_container_cluster" "gke_prod_1" {
-  name     = var.gke_prod_1
+  name     = var.cluster_1
   location = var.region_1
   enable_autopilot = true
   depends_on = [
@@ -34,7 +34,7 @@ resource "google_container_cluster" "gke_prod_1" {
 }
 
 resource "google_container_cluster" "gke_prod_2" {
-  name     = var.gke_prod_2
+  name     = var.cluster_2
   location = var.region_2
   enable_autopilot = true
   depends_on = [
@@ -73,6 +73,9 @@ resource "google_gke_hub_membership" "membership_1" {
       resource_link = "//container.googleapis.com/${google_container_cluster.gke_prod_1.id}"
     }
   }
+  authority {
+    issuer = "https://container.googleapis.com/v1/${google_container_cluster.gke_prod_1.id}"
+  }
 }
 
 resource "google_gke_hub_membership" "membership_2" {
@@ -82,6 +85,9 @@ resource "google_gke_hub_membership" "membership_2" {
       resource_link = "//container.googleapis.com/${google_container_cluster.gke_prod_2.id}"
     }
   }
+  authority {
+    issuer = "https://container.googleapis.com/v1/${google_container_cluster.gke_prod_2.id}"
+  }
 }
 
 resource "null_resource" "exec_mesh_1" {
@@ -89,13 +95,14 @@ resource "null_resource" "exec_mesh_1" {
     interpreter = ["bash", "-exc"]
     command     = "${path.module}/scripts/mesh.sh"
     environment = {
-      CLUSTER     = google_gke_hub_membership.membership_1.membership_id
-      LOCATION    = google_container_cluster.gke_prod_1.location
-      PROJECT     = var.project_id
-      KUBECONFIG  = "/tmp/${google_container_cluster.gke_prod_1.name}-kubeconfig"
-      ASM_CHANNEL = var.asm_channel
-      ASM_LABEL   = var.asm_label
-      MODULE_PATH = path.module
+      CLUSTER        = google_gke_hub_membership.membership_1.membership_id
+      LOCATION       = google_container_cluster.gke_prod_1.location
+      PROJECT_ID     = var.project_id
+      PROJECT_NUMBER = google_project.project.number
+      KUBECONFIG     = "/tmp/${google_container_cluster.gke_prod_1.name}-kubeconfig"
+      ASM_CHANNEL    = var.asm_channel
+      ASM_LABEL      = var.asm_label
+      MODULE_PATH    = path.module
     }
   }
   triggers = {
@@ -109,17 +116,52 @@ resource "null_resource" "exec_mesh_2" {
     interpreter = ["bash", "-exc"]
     command     = "${path.module}/scripts/mesh.sh"
     environment = {
-      CLUSTER     = google_gke_hub_membership.membership_2.membership_id
-      LOCATION    = google_container_cluster.gke_prod_2.location
-      PROJECT     = var.project_id
-      KUBECONFIG  = "/tmp/${google_container_cluster.gke_prod_2.name}-kubeconfig"
-      ASM_CHANNEL = var.asm_channel
-      ASM_LABEL   = var.asm_label
-      MODULE_PATH = path.module
+      CLUSTER        = google_gke_hub_membership.membership_2.membership_id
+      LOCATION       = google_container_cluster.gke_prod_2.location
+      PROJECT_ID     = var.project_id
+      PROJECT_NUMBER = google_project.project.number
+      KUBECONFIG     = "/tmp/${google_container_cluster.gke_prod_2.name}-kubeconfig"
+      ASM_CHANNEL    = var.asm_channel
+      ASM_LABEL      = var.asm_label
+      MODULE_PATH    = path.module
     }
   }
   triggers = {
     build_number = "${timestamp()}"
     script_sha1  = sha1(file("${path.module}/scripts/mesh.sh")),
   }
+}
+
+resource "null_resource" "mesh_secret" {
+  provisioner "local-exec" {
+    interpreter = ["bash", "-exc"]
+    command     = "${path.module}/scripts/mesh_secret.sh"
+    environment = {
+      PROJECT     = var.project_id
+      CLUSTER_1   = google_gke_hub_membership.membership_1.membership_id
+      LOCATION_1  = google_container_cluster.gke_prod_1.location
+      CLUSTER_2   = google_gke_hub_membership.membership_2.membership_id
+      LOCATION_2  = google_container_cluster.gke_prod_2.location
+    }
+  }
+  triggers = {
+    build_number = "${timestamp()}"
+    script_sha1  = sha1(file("${path.module}/scripts/mesh_secret.sh")),
+  }
+  depends_on = [null_resource.exec_mesh_1, null_resource.exec_mesh_2]
+}
+
+resource "null_resource" "firewall" {
+  provisioner "local-exec" {
+    interpreter = ["bash", "-exc"]
+    command     = "${path.module}/scripts/firewall.sh"
+    environment = {
+      PROJECT     = var.project_id
+    }
+  }
+  triggers = {
+    build_number = "${timestamp()}"
+    script_sha1  = sha1(file("${path.module}/scripts/firewall.sh")),
+  }
+  depends_on = [google_container_cluster.gke_prod_1, google_container_cluster.gke_prod_2]
 }
