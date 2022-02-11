@@ -11,10 +11,10 @@ echo -e "ASM LABEL is ${ASM_LABEL}"
 echo -e "MODULE PATH is ${MODULE_PATH}"
 
 # Idempotent command to enable mesh
-gcloud beta container hub mesh enable --project=${PROJECT}
+gcloud beta container hub mesh enable --project=${PROJECT_ID}
 
 # Get cluster creds
-gcloud container clusters get-credentials ${CLUSTER} --zone ${LOCATION} --project ${PROJECT}
+gcloud container clusters get-credentials ${CLUSTER} --zone ${LOCATION} --project ${PROJECT_ID}
 
 # Wait for 10 mins to ensure controlplanerevision CRD is present in the cluster
 for NUM in {1..60} ; do
@@ -27,8 +27,9 @@ kubectl wait --for=condition=established crd controlplanerevisions.mesh.cloud.go
 
 # apply mesh_id label
 gcloud container clusters update ${CLUSTER} \
+    --project ${PROJECT_ID} \
     --region ${LOCATION} \
-    --update-labels=mesh_id=${PROJECT_NUMBER}
+    --update-labels=mesh_id=proj-${PROJECT_NUMBER}
 
 # Create istio ns
 kubectl apply -f ${MODULE_PATH}/k8s/namespace-istio-system.yaml

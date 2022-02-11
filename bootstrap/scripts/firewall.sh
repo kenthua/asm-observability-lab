@@ -12,10 +12,15 @@ echo -e "ALL_CLUSTER_NETTAGS: ${ALL_CLUSTER_NETTAGS}"
 
 # autopilot doesn't have nettags
 
-gcloud compute firewall-rules create istio-multicluster-pods \
-    --allow=tcp,udp,icmp,esp,ah,sctp \
-    --direction=INGRESS \
-    --priority=900 \
-    --source-ranges="${ALL_CLUSTER_CIDRS}" \
-    --quiet \
-    --project ${PROJECT_ID}
+# gcloud compute firewall-rules  list | grep istio-multicluster-pods | wc -l
+if [ ! $(gcloud compute firewall-rules  list | grep istio-multicluster-pods | wc -l) = "1" ]; then
+    gcloud compute firewall-rules create istio-multicluster-pods \
+        --allow=tcp,udp,icmp,esp,ah,sctp \
+        --direction=INGRESS \
+        --priority=900 \
+        --source-ranges="${ALL_CLUSTER_CIDRS}" \
+        --quiet \
+        --project ${PROJECT_ID}
+    else
+        echo "Firewall rule exists"
+fi
