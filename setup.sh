@@ -59,17 +59,6 @@ kubectl config rename-context gke_${PROJECT_ID}_${CLUSTER_2_LOCATION}_${CLUSTER_
 
 kubectl config get-contexts
 
-# Apply label mesh_id
-gcloud container clusters update ${CLUSTER_1} \
-    --project ${PROJECT_ID} \
-    --region ${CLUSTER_1_LOCATION} \
-    --update-labels=mesh_id=proj-${PROJECT_NUMBER}
-
-gcloud container clusters update ${CLUSTER_2} \
-    --project ${PROJECT_ID} \
-    --region ${CLUSTER_2_LOCATION} \
-    --update-labels=mesh_id=proj-${PROJECT_NUMBER}
-
 # Cluster_1
 gcloud container hub memberships register ${CLUSTER_1} \
 --project=${PROJECT_ID} \
@@ -81,6 +70,18 @@ gcloud container hub memberships register ${CLUSTER_2} \
 --project=${PROJECT_ID} \
 --gke-cluster=${CLUSTER_2_LOCATION}/${CLUSTER_2} \
 --enable-workload-identity
+
+# Apply label mesh_id
+# this can error out if done sooner as cluster is being provisioned
+gcloud container clusters update ${CLUSTER_1} \
+    --project ${PROJECT_ID} \
+    --region ${CLUSTER_1_LOCATION} \
+    --update-labels=mesh_id=proj-${PROJECT_NUMBER}
+
+gcloud container clusters update ${CLUSTER_2} \
+    --project ${PROJECT_ID} \
+    --region ${CLUSTER_2_LOCATION} \
+    --update-labels=mesh_id=proj-${PROJECT_NUMBER}
 
 gcloud beta container hub mesh enable --project=${PROJECT_ID}
 gcloud beta container hub mesh describe
