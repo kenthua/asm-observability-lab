@@ -26,7 +26,7 @@ cat <<EOF > ${WORKDIR}/vars.sh
 export PROJECT_ID=${GOOGLE_CLOUD_PROJECT}
 export CLUSTER_1=gke-prod-1
 export CLUSTER_2=gke-prod-2
-export CLUSTER_1_LOCATION=us-west1
+export CLUSTER_1_LOCATION=us-west2
 export CLUSTER_2_LOCATION=us-central1
 export ASM_CHANNEL=regular
 export ASM_LABEL=asm-managed
