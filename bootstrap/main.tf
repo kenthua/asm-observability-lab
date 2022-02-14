@@ -156,7 +156,7 @@ resource "null_resource" "firewall" {
     interpreter = ["bash", "-exc"]
     command     = "${path.module}/scripts/firewall.sh"
     environment = {
-      PROJECT     = var.project_id
+      PROJECT_ID     = var.project_id
     }
   }
   triggers = {
@@ -164,4 +164,36 @@ resource "null_resource" "firewall" {
     script_sha1  = sha1(file("${path.module}/scripts/firewall.sh")),
   }
   depends_on = [google_container_cluster.gke_prod_1, google_container_cluster.gke_prod_2]
+}
+
+resource "null_resource" "ob" {
+  provisioner "local-exec" {
+    interpreter = ["bash", "-exc"]
+    command     = "${path.module}/scripts/ob-app/ob.sh"
+    environment = {
+      PROJECT_ID     = var.project_id
+      CLUSTER_1      = google_container_cluster.gke_prod_1.name
+      CLUSTER_2      = google_container_cluster.gke_prod_2.name
+    }
+  }
+  triggers = {
+    build_number = "${timestamp()}"
+    script_sha1  = sha1(file("${path.module}/scripts/ob-app/ob.sh")),
+  }
+  depends_on = [null_resource.mesh_secret]
+}
+
+resource "null_resource" "ob" {
+  provisioner "local-exec" {
+    interpreter = ["bash", "-exc"]
+    command     = "${path.module}/scripts/services-dashboard.sh"
+    environment = {
+      PROJECT_ID = var.project_id
+    }
+  }
+  triggers = {
+    build_number = "${timestamp()}"
+    script_sha1  = sha1(file("${path.module}/scripts/services-dashbaord.sh")),
+  }
+  depends_on = [null_resource.ob]
 }
