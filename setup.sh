@@ -5,6 +5,7 @@ gcloud config set project ${PROJECT_ID}
 cat <<EOF > ${WORKDIR}/vars.sh
 export WORKDIR=${WORKDIR}
 export PROJECT_ID=$(gcloud info --format='value(config.project)')
+export PROJECT_NUMBER="$(gcloud projects describe `gcloud info --format='value(config.project)'` --format='value(projectNumber)')"
 export GCLOUD_USER=$(gcloud info --format='value(config.account)')
 export CLUSTER_1=gke-prod-1
 export CLUSTER_1_LOCATION=us-west2
@@ -57,6 +58,17 @@ kubectl config rename-context gke_${PROJECT_ID}_${CLUSTER_1_LOCATION}_${CLUSTER_
 kubectl config rename-context gke_${PROJECT_ID}_${CLUSTER_2_LOCATION}_${CLUSTER_2} ${CLUSTER_2}
 
 kubectl config get-contexts
+
+# Apply label mesh_id
+gcloud container clusters update ${CLUSTER_1} \
+    --project ${PROJECT_ID} \
+    --region ${CLUSTER_1_LOCATION} \
+    --update-labels=mesh_id=proj-${PROJECT_NUMBER}
+
+gcloud container clusters update ${CLUSTER_2} \
+    --project ${PROJECT_ID} \
+    --region ${CLUSTER_2_LOCATION} \
+    --update-labels=mesh_id=proj-${PROJECT_NUMBER}
 
 # Cluster_1
 gcloud container hub memberships register ${CLUSTER_1} \
