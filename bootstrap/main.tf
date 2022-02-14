@@ -195,7 +195,7 @@ resource "null_resource" "dashboard" {
   }
   triggers = {
     build_number = "${timestamp()}"
-    script_sha1  = sha1(file("${path.module}/scripts/services-dashbaord.sh")),
+    script_sha1  = sha1(file("${path.module}/scripts/services-dashboard.sh")),
   }
   depends_on = [null_resource.ob]
 }
