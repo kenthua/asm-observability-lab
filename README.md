@@ -51,23 +51,6 @@ envsubst < variables.tfvars_tmpl > variables.tfvars
 terraform init -var-file=variables.tfvars
 terraform plan -var-file=variables.tfvars
 terraform apply -auto-approve -var-file=variables.tfvars
-
-# get cluster kubeconfig
-touch ${WORKDIR}/asm-kubeconfig && export KUBECONFIG=${WORKDIR}/asm-kubeconfig
-gcloud container clusters get-credentials ${CLUSTER_1} --zone ${CLUSTER_1_LOCATION}
-gcloud container clusters get-credentials ${CLUSTER_2} --zone ${CLUSTER_2_LOCATION}
-
-kubectl config rename-context gke_${PROJECT_ID}_${CLUSTER_1_LOCATION}_${CLUSTER_1} ${CLUSTER_1}
-kubectl config rename-context gke_${PROJECT_ID}_${CLUSTER_2_LOCATION}_${CLUSTER_2} ${CLUSTER_2}
-
-kubectl config get-contexts
-
-# setup app
-${WORKDIR}/lab/workload/ob.sh
-
-# setup dashboard
-${WORKDIR}/lab/workload/ops/services-dashboard.sh \
-  ${WORKDIR}/lab/workload/ops/services-dashboard-prod.json_tmpl
 ```
 
 # Labs
@@ -79,6 +62,16 @@ source ~/asm-observability/vars.sh
 # Generate the SLOs
 ${WORKDIR}/lab/workload/ops/asm-slo.sh \
   ${GOOGLE_CLOUD_PROJECT} ob
+
+# get cluster kubeconfig
+touch ${WORKDIR}/asm-kubeconfig && export KUBECONFIG=${WORKDIR}/asm-kubeconfig
+gcloud container clusters get-credentials ${CLUSTER_1} --zone ${CLUSTER_1_LOCATION}
+gcloud container clusters get-credentials ${CLUSTER_2} --zone ${CLUSTER_2_LOCATION}
+
+kubectl config rename-context gke_${PROJECT_ID}_${CLUSTER_1_LOCATION}_${CLUSTER_1} ${CLUSTER_1}
+kubectl config rename-context gke_${PROJECT_ID}_${CLUSTER_2_LOCATION}_${CLUSTER_2} ${CLUSTER_2}
+
+kubectl config get-contexts
 
 echo "*** Access Online Boutique app by navigating to the following address: ***\n"
 echo "http://$(kubectl --context=${CLUSTER_1} -n asm-gateways get svc asm-ingressgateway -o jsonpath={.status.loadBalancer.ingress[].ip})"
