@@ -185,7 +185,7 @@ resource "null_resource" "ob" {
   depends_on = [null_resource.mesh_secret]
 }
 
-resource "null_resource" "ob" {
+resource "null_resource" "dashboard" {
   provisioner "local-exec" {
     interpreter = ["bash", "-exc"]
     command     = "${path.module}/scripts/services-dashboard.sh"
