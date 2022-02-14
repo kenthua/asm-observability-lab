@@ -171,9 +171,11 @@ resource "null_resource" "ob" {
     interpreter = ["bash", "-exc"]
     command     = "${path.module}/scripts/ob-app/ob.sh"
     environment = {
-      PROJECT_ID     = var.project_id
-      CLUSTER_1      = google_container_cluster.gke_prod_1.name
-      CLUSTER_2      = google_container_cluster.gke_prod_2.name
+      PROJECT_ID = var.project_id
+      CLUSTER_1  = google_gke_hub_membership.membership_1.membership_id
+      LOCATION_1 = google_container_cluster.gke_prod_1.location
+      CLUSTER_2  = google_gke_hub_membership.membership_2.membership_id
+      LOCATION_2 = google_container_cluster.gke_prod_2.location
     }
   }
   triggers = {

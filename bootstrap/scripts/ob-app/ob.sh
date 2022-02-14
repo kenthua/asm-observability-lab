@@ -60,6 +60,15 @@ sed -e "s/ASM_REV_LABEL/${ASM_REV_LABEL}/" ${SCRIPT_DIR}/ob/dev/gke2/ob-namespac
 sed -e "s/GSA/${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com/" ${SCRIPT_DIR}/ob/dev/gke1/sa-workload-monitoring-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke1/sa-workload-monitoring-patch.yaml
 sed -e "s/GSA/${GSA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com/" ${SCRIPT_DIR}/ob/dev/gke2/sa-workload-monitoring-patch.yaml_tmpl > ${SCRIPT_DIR}/ob/dev/gke2/sa-workload-monitoring-patch.yaml
 
+touch ${SCRIPT_DIR}/asm-kubeconfig && export KUBECONFIG=${SCRIPT_DIR}/asm-kubeconfig
+gcloud container clusters get-credentials ${CLUSTER_1} --zone ${CLUSTER_1_LOCATION}
+gcloud container clusters get-credentials ${CLUSTER_2} --zone ${CLUSTER_2_LOCATION}
+
+kubectl config rename-context gke_${PROJECT_ID}_${CLUSTER_1_LOCATION}_${CLUSTER_1} ${CLUSTER_1}
+kubectl config rename-context gke_${PROJECT_ID}_${CLUSTER_2_LOCATION}_${CLUSTER_2} ${CLUSTER_2}
+
+kubectl config get-contexts
+
 ## Stage 3: Deploy
 echo -e "\n"
 echo_cyan "*** Deploying Online Boutique app to ${GKE1} cluster... ***\n"
